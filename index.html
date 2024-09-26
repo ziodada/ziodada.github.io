@@ -3,104 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scegli il tuo Regalo di Natale</title>
+    <title>Selettore di Regali di Natale</title>
     <style>
         body {
             font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            text-align: center;
+            padding: 20px;
+        }
+        .gift-box {
+            width: 150px;
+            height: 150px;
+            margin: 20px auto;
+            background-color: #ff5c5c;
+            border-radius: 10px;
+            position: relative;
+            cursor: pointer;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
-            background: linear-gradient(to bottom, #ffe6e6, #e6ffe6);
         }
-        .container {
-            text-align: center;
-            background-color: white;
-            padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        .gift-box img {
+            max-width: 100px;
         }
-        h1 {
-            color: #d32f2f;
+        .hidden {
+            display: none;
         }
-        .gift-icon {
-            font-size: 5rem;
-            color: #4caf50;
-            margin: 1rem 0;
+        #prize {
+            font-size: 24px;
+            margin: 20px;
         }
-        button {
-            background-color: #d32f2f;
+        #book-button {
+            background-color: #4CAF50;
             color: white;
-            border: none;
             padding: 10px 20px;
-            font-size: 1rem;
+            border: none;
             border-radius: 5px;
             cursor: pointer;
-            transition: background-color 0.3s;
+            display: none;
         }
-        button:hover {
-            background-color: #b71c1c;
-        }
-        .result {
-            margin-top: 1rem;
-            font-weight: bold;
+        #book-button:hover {
+            background-color: #45a049;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Scegli il tuo Regalo di Natale!</h1>
-        <div id="giftPicker">
-            <button onclick="pickGift()">Scegli un Regalo</button>
-        </div>
-        <div id="giftReveal" style="display: none;">
-            <div class="gift-icon">🎁</div>
-            <p>Hai scelto un regalo! Vuoi scoprire cosa hai vinto?</p>
-            <button onclick="revealGift()">Rivela il Regalo</button>
-        </div>
-        <div id="giftResult" style="display: none;">
-            <p class="result">Congratulazioni! Hai vinto: <span id="prize"></span></p>
-            <button onclick="reset()">Gioca di Nuovo</button>
-        </div>
+
+    <h1>Scopri il tuo premio di Natale!</h1>
+
+    <div class="gift-box" onclick="revealPrize()">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Red_Gift.svg/512px-Red_Gift.svg.png" alt="Pacchetto regalo">
     </div>
 
+    <div id="prize" class="hidden">Hai vinto uno sconto del 20%!</div>
+    
+    <button id="book-button" onclick="window.location.href='https://www.antonellamafucci.com'">Prenota Ora</button>
+
     <script>
-        const prizes = [
-            { name: "Sconto del 10%", probability: 0.4 },
-            { name: "Sessione gratuita", probability: 0.3 },
-            { name: "Buono regalo da 50€", probability: 0.2 },
-            { name: "Pacchetto Deluxe", probability: 0.1 }
-        ];
-
-        let selectedPrize;
-
-        function pickGift() {
-            const random = Math.random();
-            let cumulativeProbability = 0;
-            
-            for (let prize of prizes) {
-                cumulativeProbability += prize.probability;
-                if (random <= cumulativeProbability) {
-                    selectedPrize = prize;
-                    break;
-                }
-            }
-
-            document.getElementById('giftPicker').style.display = 'none';
-            document.getElementById('giftReveal').style.display = 'block';
-        }
-
-        function revealGift() {
-            document.getElementById('giftReveal').style.display = 'none';
-            document.getElementById('giftResult').style.display = 'block';
-            document.getElementById('prize').textContent = selectedPrize.name;
-        }
-
-        function reset() {
-            document.getElementById('giftResult').style.display = 'none';
-            document.getElementById('giftPicker').style.display = 'block';
+        function revealPrize() {
+            document.getElementById('prize').classList.remove('hidden');
+            document.getElementById('book-button').style.display = 'inline-block';
         }
     </script>
+
 </body>
 </html>
