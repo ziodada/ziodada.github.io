@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Promozione Natalizia</title>
+    <title>Promozione Natalizia - Antonella Mafucci</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
+            font-family: 'Arial', sans-serif;
+            background-color: #0c4c45;
             background-image: url('https://example.com/christmas-background.jpg');
             background-size: cover;
             display: flex;
@@ -20,22 +20,28 @@
             background-color: rgba(255, 255, 255, 0.9);
             padding: 2rem;
             border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            box-shadow: 0 0 20px rgba(0,0,0,0.2);
             text-align: center;
             max-width: 400px;
         }
         h1 {
             color: #c41e3a;
+            font-size: 2rem;
+            margin-bottom: 1rem;
         }
         button {
             background-color: #c41e3a;
             color: white;
             border: none;
-            padding: 10px 20px;
+            padding: 12px 24px;
             font-size: 1rem;
             cursor: pointer;
-            border-radius: 5px;
+            border-radius: 25px;
             margin-top: 1rem;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #9a1629;
         }
         button:disabled {
             background-color: #cccccc;
@@ -44,15 +50,49 @@
         #countdown {
             font-size: 1.2rem;
             margin-bottom: 1rem;
+            color: #0c4c45;
         }
         #form, #result {
             display: none;
+        }
+        input {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .gift-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        .snowflake {
+            color: #fff;
+            font-size: 1em;
+            font-family: Arial, sans-serif;
+            text-shadow: 0 0 5px #000;
+            position: fixed;
+            top: -10%;
+            z-index: 9999;
+            user-select: none;
+            cursor: default;
+            animation: snowfall 10s linear infinite;
+        }
+        @keyframes snowfall {
+            0% {
+                transform: translateY(0);
+            }
+            100% {
+                transform: translateY(100vh);
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Promozione Natalizia</h1>
+        <div class="gift-icon">🎁</div>
         <div id="countdown"></div>
         <div id="initial-screen">
             <button id="tryLuckBtn" onclick="showForm()">Tenta la Fortuna</button>
@@ -68,7 +108,7 @@
 
     <script>
         const endDate = new Date();
-        endDate.setDate(endDate.getDate() + 7); // Imposta la fine della promozione a 7 giorni da ora
+        endDate.setDate(endDate.getDate() + 7); // Promozione attiva per 7 giorni
 
         const prizes = [
             { name: "Sessione gratuita", probability: 0.01, limit: 1 },
@@ -124,10 +164,10 @@
             document.getElementById('result').innerHTML = `
                 <h2>Congratulazioni, ${name}!</h2>
                 <p>Hai vinto: ${prize}</p>
-                <button onclick="window.location.href='https://tuosito.com/prenota'">Prenota Ora</button>
+                <button onclick="redirectToBooking('${prize}')">Prenota Ora</button>
             `;
 
-            sendDataToServer(name, email, phone, prize);
+            sendDataToGoogleForm(name, email, phone, prize);
         }
 
         function selectPrize() {
@@ -147,18 +187,57 @@
                     return prize.name;
                 }
             }
-            return "Sconto del 10%"; // Default prize
+            return "Sconto del 10%"; // Premio predefinito
         }
 
-        function sendDataToServer(name, email, phone, prize) {
-            // Simula l'invio dei dati al server
-            console.log(`Dati inviati: Nome: ${name}, Email: ${email}, Telefono: ${phone}, Premio: ${prize}`);
-            // Qui dovresti implementare la vera logica per inviare i dati al tuo server
+        function sendDataToGoogleForm(name, email, phone, prize) {
+            // URL del Google Form (da sostituire con il tuo URL reale)
+            const googleFormUrl = 'https://docs.google.com/forms/d/e/YOUR_FORM_ID/formResponse';
+            
+            // Creazione dei dati da inviare
+            const formData = new FormData();
+            formData.append('entry.123456789', name);  // Sostituisci con gli ID reali dei campi del tuo form
+            formData.append('entry.987654321', email);
+            formData.append('entry.456789123', phone);
+            formData.append('entry.321654987', prize);
+
+            // Invio dei dati al Google Form
+            fetch(googleFormUrl, {
+                method: 'POST',
+                mode: 'no-cors', // Importante per evitare errori CORS
+                body: formData
+            }).then(() => {
+                console.log('Dati inviati con successo al Google Form');
+            }).catch(error => {
+                console.error('Errore nell\'invio dei dati:', error);
+            });
         }
 
-        // Avvia il countdown e aggiornalo ogni secondo
+        function redirectToBooking(prize) {
+            // Codifica il premio nell'URL per poterlo recuperare nella pagina di prenotazione
+            const encodedPrize = encodeURIComponent(prize);
+            window.location.href = `https://antonellamafucci.com/prenota?premio=${encodedPrize}`;
+        }
+
+        // Aggiunta di fiocchi di neve
+        function createSnowflakes() {
+            const snowflakesCount = 50;
+            const container = document.body;
+            for (let i = 0; i < snowflakesCount; i++) {
+                const snowflake = document.createElement('div');
+                snowflake.className = 'snowflake';
+                snowflake.style.left = `${Math.random() * 100}%`;
+                snowflake.style.animationDuration = `${Math.random() * 5 + 5}s`;
+                snowflake.style.animationDelay = `${Math.random() * 5}s`;
+                snowflake.innerHTML = '❄';
+                container.appendChild(snowflake);
+            }
+        }
+
+        // Avvio delle funzioni
         updateCountdown();
         setInterval(updateCountdown, 1000);
+        createSnowflakes();
     </script>
 </body>
 </html>
