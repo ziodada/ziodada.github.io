@@ -7,7 +7,7 @@
     <style>
         body {
             font-family: 'Arial', sans-serif;
-            background: url('https://images.unsplash.com/photo-1608889173280-29d84d9f493e?fit=crop&w=1500&q=80') no-repeat center center fixed;
+            background: url('https://images.unsplash.com/photo-1543946733-b114f9f0c746?fit=crop&w=1500&q=80') no-repeat center center fixed;
             background-size: cover;
             color: #fff;
             text-align: center;
@@ -16,16 +16,19 @@
         }
 
         .container {
-            background-color: rgba(0, 0, 0, 0.7);
+            background-color: rgba(0, 0, 0, 0.6);
             padding: 20px;
             border-radius: 10px;
             max-width: 600px;
             margin: 100px auto;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
         }
 
         h1 {
             font-size: 3em;
             margin-bottom: 20px;
+            color: #ffcc00;
+            text-shadow: 2px 2px #000;
         }
 
         #gift {
@@ -40,6 +43,8 @@
         .prize-message {
             font-size: 1.5em;
             margin-top: 20px;
+            color: #ffcc00;
+            text-shadow: 1px 1px #000;
         }
 
         .form-container {
@@ -61,6 +66,7 @@
             color: white;
             text-decoration: none;
             border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
         }
 
         .btn-booking:hover {
@@ -76,10 +82,9 @@
         <div class="prize-message" id="prizeMessage"></div>
         <a href="https://www.antonellamafucci.com" id="bookingButton" class="btn-booking">Prenota Ora</a>
 
-        <div class="form-container" id="formContainer" style="display:none;">
-            <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSe2f_6sX8Ezd_Z3OJJil0UwZVD8cydESaj8OF74aBy2FdHi_w/viewform?embedded=true"></iframe>
-        </div>
-    </div>
+       <div class="form-container" id="formContainer" style="display:none;">
+    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSe2f_6sX8Ezd_Z3OJJil0UwZVD8cydESaj8OF74aBy2FdHi_w/viewform?embedded=true"></iframe>
+</div>
 
     <script>
         const prizes = [
