@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hai vinto!</title>
+</head>
+<body>
+    <h1>Congratulazioni!</h1>
+    <p>Hai vinto: <span id="premio"></span></p>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const premio = decodeURIComponent(urlParams.get('premio'));
+        document.getElementById('premio').textContent = premio;
+    </script>
+
+    <p>Per prenotare il tuo premio, clicca qui:</p>
+    <a href="https://antonellamafucci.com/prenota?nome={{nome}}&email={{email}}&telefono={{telefono}}&premio={{premio}}" target="_blank">Prenota Ora</a>
+</body>
+</html>
