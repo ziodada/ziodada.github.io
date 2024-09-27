@@ -7,7 +7,7 @@
   <style>
     body {
       font-family: 'Arial', sans-serif;
-      background: url('https://res.cloudinary.com/dk-find-out/image/upload/q_80,w_1440,f_auto/Natale_merry-background.jpg') no-repeat center center fixed;
+      background: url('https://res.cloudinary.com/dk-find-out/image/upload/q_auto:eco,f_auto/Natale_merry-background.jpg') no-repeat center center fixed;
       background-size: cover;
       margin: 0;
       padding: 0;
@@ -23,10 +23,11 @@
       font-size: 3em;
       color: #f8e71c;
       text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+      margin-bottom: 20px;
     }
 
     .gift-box {
-      margin: 50px auto;
+      margin: 30px auto;
       width: 150px;
       height: 150px;
       background: url('https://res.cloudinary.com/demo/image/upload/v1598109081/gift_box.png') no-repeat center center;
@@ -57,6 +58,7 @@
       background-color: rgba(0, 0, 0, 0.7);
       padding: 20px;
       border-radius: 10px;
+      display: none;
     }
 
     .form-container input {
@@ -80,9 +82,9 @@
   <div class="container">
     <h1>Natale Giveaway: Vinci un premio!</h1>
     <div class="gift-box" onclick="revealPrize()"></div>
-    <p class="winner-message" id="winner-message">Hai vinto un premio! Prenota ora.</p>
+    <p class="winner-message" id="winner-message">Hai vinto un premio! Inserisci i tuoi dati per ritirarlo.</p>
 
-    <div class="form-container" id="form-container" style="display: none;">
+    <div class="form-container" id="form-container">
       <form id="google-form" action="https://docs.google.com/forms/d/e/1FAIpQLSe2f_6sX8Ezd_Z3OJJil0UwZVD8cydESaj8OF74aBy2FdHi_w/formResponse" method="POST" target="_self">
         <input type="text" name="entry.1234567890" placeholder="Il tuo nome" required>
         <input type="email" name="entry.0987654321" placeholder="La tua email" required>
