@@ -1,103 +1,164 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Natale Giveaway</title>
-  <style>
-    body {
-      font-family: 'Arial', sans-serif;
-      background: url('https://res.cloudinary.com/dk-find-out/image/upload/q_auto:eco,f_auto/Natale_merry-background.jpg') no-repeat center center fixed;
-      background-size: cover;
-      margin: 0;
-      padding: 0;
-      color: #ffffff;
-    }
-
-    .container {
-      text-align: center;
-      padding: 50px;
-    }
-
-    h1 {
-      font-size: 3em;
-      color: #f8e71c;
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
-      margin-bottom: 20px;
-    }
-
-    .gift-box {
-      margin: 30px auto;
-      width: 150px;
-      height: 150px;
-      background: url('https://res.cloudinary.com/demo/image/upload/v1598109081/gift_box.png') no-repeat center center;
-      background-size: contain;
-      cursor: pointer;
-    }
-
-    .reveal-prize {
-      font-size: 1.5em;
-      margin-top: 20px;
-      padding: 10px;
-      background-color: #ff9f00;
-      border: none;
-      color: #fff;
-      cursor: pointer;
-    }
-
-    .winner-message {
-      display: none;
-      font-size: 1.8em;
-      color: #ffffff;
-      margin-top: 20px;
-      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-    }
-
-    .form-container {
-      margin-top: 20px;
-      background-color: rgba(0, 0, 0, 0.7);
-      padding: 20px;
-      border-radius: 10px;
-      display: none;
-    }
-
-    .form-container input {
-      padding: 10px;
-      width: 90%;
-      margin: 10px auto;
-      display: block;
-      font-size: 1em;
-    }
-
-    .form-container button {
-      padding: 10px 20px;
-      background-color: #f8e71c;
-      border: none;
-      cursor: pointer;
-      font-size: 1.2em;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Promozione Natalizia</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            background-image: url('https://example.com/christmas-background.jpg');
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 400px;
+        }
+        h1 {
+            color: #c41e3a;
+        }
+        button {
+            background-color: #c41e3a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 1rem;
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        #countdown {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+        #form, #result {
+            display: none;
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Natale Giveaway: Vinci un premio!</h1>
-    <div class="gift-box" onclick="revealPrize()"></div>
-    <p class="winner-message" id="winner-message">Hai vinto un premio! Inserisci i tuoi dati per ritirarlo.</p>
-
-    <div class="form-container" id="form-container">
-      <form id="google-form" action="https://docs.google.com/forms/d/e/1FAIpQLSe2f_6sX8Ezd_Z3OJJil0UwZVD8cydESaj8OF74aBy2FdHi_w/formResponse" method="POST" target="_self">
-        <input type="text" name="entry.1234567890" placeholder="Il tuo nome" required>
-        <input type="email" name="entry.0987654321" placeholder="La tua email" required>
-        <button type="submit">Invia e Prenota Ora</button>
-      </form>
+    <div class="container">
+        <h1>Promozione Natalizia</h1>
+        <div id="countdown"></div>
+        <div id="initial-screen">
+            <button id="tryLuckBtn" onclick="showForm()">Tenta la Fortuna</button>
+        </div>
+        <div id="form">
+            <input type="text" id="name" placeholder="Nome" required>
+            <input type="email" id="email" placeholder="Email" required>
+            <input type="tel" id="phone" placeholder="Telefono" required>
+            <button onclick="submitForm()">Invia</button>
+        </div>
+        <div id="result"></div>
     </div>
-  </div>
 
-  <script>
-    function revealPrize() {
-      document.getElementById('winner-message').style.display = 'block';
-      document.getElementById('form-container').style.display = 'block';
-    }
-  </script>
+    <script>
+        const endDate = new Date();
+        endDate.setDate(endDate.getDate() + 7); // Imposta la fine della promozione a 7 giorni da ora
+
+        const prizes = [
+            { name: "Sessione gratuita", probability: 0.01, limit: 1 },
+            { name: "Sconto del 20%", probability: 0.3 },
+            { name: "Sconto del 10%", probability: 0.49 },
+            { name: "Pannello 20x20", probability: 0.2 }
+        ];
+
+        let freeSessionAwarded = 0;
+
+        function updateCountdown() {
+            const now = new Date();
+            const timeLeft = endDate - now;
+
+            if (timeLeft <= 0) {
+                document.getElementById('countdown').innerHTML = "Promozione terminata";
+                disablePromotion();
+                return;
+            }
+
+            const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+            document.getElementById('countdown').innerHTML = `Tempo rimanente: ${days}d ${hours}h ${minutes}m ${seconds}s`;
+        }
+
+        function disablePromotion() {
+            const tryLuckBtn = document.getElementById('tryLuckBtn');
+            tryLuckBtn.disabled = true;
+            tryLuckBtn.style.opacity = 0.5;
+        }
+
+        function showForm() {
+            document.getElementById('initial-screen').style.display = 'none';
+            document.getElementById('form').style.display = 'block';
+        }
+
+        function submitForm() {
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+
+            if (!name || !email || !phone) {
+                alert('Per favore, compila tutti i campi.');
+                return;
+            }
+
+            const prize = selectPrize();
+            document.getElementById('form').style.display = 'none';
+            document.getElementById('result').style.display = 'block';
+            document.getElementById('result').innerHTML = `
+                <h2>Congratulazioni, ${name}!</h2>
+                <p>Hai vinto: ${prize}</p>
+                <button onclick="window.location.href='https://tuosito.com/prenota'">Prenota Ora</button>
+            `;
+
+            sendDataToServer(name, email, phone, prize);
+        }
+
+        function selectPrize() {
+            const rand = Math.random();
+            let cumulativeProbability = 0;
+            for (let prize of prizes) {
+                cumulativeProbability += prize.probability;
+                if (rand <= cumulativeProbability) {
+                    if (prize.name === "Sessione gratuita") {
+                        if (freeSessionAwarded < prize.limit) {
+                            freeSessionAwarded++;
+                            return prize.name;
+                        } else {
+                            return selectPrize(); // Seleziona un altro premio se il limite è stato raggiunto
+                        }
+                    }
+                    return prize.name;
+                }
+            }
+            return "Sconto del 10%"; // Default prize
+        }
+
+        function sendDataToServer(name, email, phone, prize) {
+            // Simula l'invio dei dati al server
+            console.log(`Dati inviati: Nome: ${name}, Email: ${email}, Telefono: ${phone}, Premio: ${prize}`);
+            // Qui dovresti implementare la vera logica per inviare i dati al tuo server
+        }
+
+        // Avvia il countdown e aggiornalo ogni secondo
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+    </script>
 </body>
 </html>
