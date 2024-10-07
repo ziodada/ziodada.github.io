@@ -8,8 +8,7 @@
         body {
             font-family: 'Arial', sans-serif;
             background-color: #0c4c45;
-            background-image: url('https://example.com/christmas-background.jpg');
-            background-size: cover;
+            color: #ffffff;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -17,7 +16,7 @@
             margin: 0;
         }
         .container {
-            background-color: rgba(255, 255, 255, 0.9);
+            background-color: rgba(255, 255, 255, 0.1);
             padding: 2rem;
             border-radius: 10px;
             box-shadow: 0 0 20px rgba(0,0,0,0.2);
@@ -29,80 +28,48 @@
             font-size: 2rem;
             margin-bottom: 1rem;
         }
+        input, button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+        }
         button {
             background-color: #c41e3a;
             color: white;
-            border: none;
-            padding: 12px 24px;
-            font-size: 1rem;
             cursor: pointer;
-            border-radius: 25px;
-            margin-top: 1rem;
             transition: background-color 0.3s;
         }
         button:hover {
             background-color: #9a1629;
         }
-        button:disabled {
-            background-color: #cccccc;
-            cursor: not-allowed;
+        #countdown, #result {
+            margin-top: 1rem;
         }
-        #countdown {
-            font-size: 1.2rem;
-            margin-bottom: 1rem;
-            color: #0c4c45;
-        }
-        #form, #result {
+        #userForm, #gameSection, #result {
             display: none;
-        }
-        input {
-            display: block;
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        .gift-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-        .snowflake {
-            color: #fff;
-            font-size: 1em;
-            font-family: Arial, sans-serif;
-            text-shadow: 0 0 5px #000;
-            position: fixed;
-            top: -10%;
-            z-index: 9999;
-            user-select: none;
-            cursor: default;
-            animation: snowfall 10s linear infinite;
-        }
-        @keyframes snowfall {
-            0% {
-                transform: translateY(0);
-            }
-            100% {
-                transform: translateY(100vh);
-            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Promozione Natalizia</h1>
-        <div class="gift-icon">🎁</div>
         <div id="countdown"></div>
-        <div id="initial-screen">
-            <button id="tryLuckBtn" onclick="showForm()">Tenta la Fortuna</button>
-        </div>
-        <div id="form">
+        
+        <div id="userForm">
             <input type="text" id="name" placeholder="Nome" required>
+            <input type="text" id="surname" placeholder="Cognome" required>
             <input type="email" id="email" placeholder="Email" required>
             <input type="tel" id="phone" placeholder="Telefono" required>
-            <button onclick="submitForm()">Invia</button>
+            <button onclick="submitUserData()">Partecipa</button>
         </div>
+
+        <div id="gameSection">
+            <button onclick="play()">Gioca Ora</button>
+        </div>
+
         <div id="result"></div>
     </div>
 
@@ -118,6 +85,7 @@
         ];
 
         let freeSessionAwarded = 0;
+        let userData = {};
 
         function updateCountdown() {
             const now = new Date();
@@ -125,7 +93,7 @@
 
             if (timeLeft <= 0) {
                 document.getElementById('countdown').innerHTML = "Promozione terminata";
-                disablePromotion();
+                document.getElementById('userForm').style.display = 'none';
                 return;
             }
 
@@ -134,40 +102,35 @@
             const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
             const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
 
-            document.getElementById('countdown').innerHTML = `Tempo rimanente: ${days}d ${hours}h ${minutes}m ${seconds}s`;
+            document.getElementById('countdown').innerHTML = `Tempo rimanente: ${days}g ${hours}h ${minutes}m ${seconds}s`;
         }
 
-        function disablePromotion() {
-            const tryLuckBtn = document.getElementById('tryLuckBtn');
-            tryLuckBtn.disabled = true;
-            tryLuckBtn.style.opacity = 0.5;
-        }
+        function submitUserData() {
+            userData.name = document.getElementById('name').value;
+            userData.surname = document.getElementById('surname').value;
+            userData.email = document.getElementById('email').value;
+            userData.phone = document.getElementById('phone').value;
 
-        function showForm() {
-            document.getElementById('initial-screen').style.display = 'none';
-            document.getElementById('form').style.display = 'block';
-        }
-
-        function submitForm() {
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const phone = document.getElementById('phone').value;
-
-            if (!name || !email || !phone) {
+            if (!userData.name || !userData.surname || !userData.email || !userData.phone) {
                 alert('Per favore, compila tutti i campi.');
                 return;
             }
 
+            document.getElementById('userForm').style.display = 'none';
+            document.getElementById('gameSection').style.display = 'block';
+        }
+
+        function play() {
             const prize = selectPrize();
-            document.getElementById('form').style.display = 'none';
+            document.getElementById('gameSection').style.display = 'none';
             document.getElementById('result').style.display = 'block';
             document.getElementById('result').innerHTML = `
-                <h2>Congratulazioni, ${name}!</h2>
+                <h2>Congratulazioni, ${userData.name} ${userData.surname}!</h2>
                 <p>Hai vinto: ${prize}</p>
-                <button onclick="redirectToBooking('${prize}')">Prenota Ora</button>
+                <button onclick="claim('${prize}')">Prenota Ora</button>
             `;
 
-            sendDataToGoogleForm(name, email, phone, prize);
+            sendToGoogleForm(prize);
         }
 
         function selectPrize() {
@@ -181,30 +144,28 @@
                             freeSessionAwarded++;
                             return prize.name;
                         } else {
-                            return selectPrize(); // Seleziona un altro premio se il limite è stato raggiunto
+                            return selectPrize();
                         }
                     }
                     return prize.name;
                 }
             }
-            return "Sconto del 10%"; // Premio predefinito
+            return "Sconto del 10%";
         }
 
-        function sendDataToGoogleForm(name, email, phone, prize) {
-            // URL del Google Form (da sostituire con il tuo URL reale)
-            const googleFormUrl = 'https://docs.google.com/forms/d/e/YOUR_FORM_ID/formResponse';
+        function sendToGoogleForm(prize) {
+            const googleFormUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSecjt_qFX4R-h3Br20FDCu8_qb9E8UaoBVgLcP720NHys_7Rg/formResponse';
             
-            // Creazione dei dati da inviare
             const formData = new FormData();
-            formData.append('entry.123456789', name);  // Sostituisci con gli ID reali dei campi del tuo form
-            formData.append('entry.987654321', email);
-            formData.append('entry.456789123', phone);
-            formData.append('entry.321654987', prize);
+            formData.append('entry.2092238618', userData.name);
+            formData.append('entry.2080839788', userData.surname);
+            formData.append('entry.1556369182', userData.email);
+            formData.append('entry.961788203', userData.phone);
+            formData.append('entry.479301265', prize);
 
-            // Invio dei dati al Google Form
             fetch(googleFormUrl, {
                 method: 'POST',
-                mode: 'no-cors', // Importante per evitare errori CORS
+                mode: 'no-cors',
                 body: formData
             }).then(() => {
                 console.log('Dati inviati con successo al Google Form');
@@ -213,31 +174,19 @@
             });
         }
 
-        function redirectToBooking(prize) {
-            // Codifica il premio nell'URL per poterlo recuperare nella pagina di prenotazione
-            const encodedPrize = encodeURIComponent(prize);
-            window.location.href = `https://antonellamafucci.com/prenota?premio=${encodedPrize}`;
+        function claim(prize) {
+            const bookingUrl = `https://antonellamafucci.com/prenota?` +
+                               `nome=${encodeURIComponent(userData.name)}` +
+                               `&cognome=${encodeURIComponent(userData.surname)}` +
+                               `&email=${encodeURIComponent(userData.email)}` +
+                               `&telefono=${encodeURIComponent(userData.phone)}` +
+                               `&premio=${encodeURIComponent(prize)}`;
+            window.location.href = bookingUrl;
         }
 
-        // Aggiunta di fiocchi di neve
-        function createSnowflakes() {
-            const snowflakesCount = 50;
-            const container = document.body;
-            for (let i = 0; i < snowflakesCount; i++) {
-                const snowflake = document.createElement('div');
-                snowflake.className = 'snowflake';
-                snowflake.style.left = `${Math.random() * 100}%`;
-                snowflake.style.animationDuration = `${Math.random() * 5 + 5}s`;
-                snowflake.style.animationDelay = `${Math.random() * 5}s`;
-                snowflake.innerHTML = '❄';
-                container.appendChild(snowflake);
-            }
-        }
-
-        // Avvio delle funzioni
         updateCountdown();
         setInterval(updateCountdown, 1000);
-        createSnowflakes();
+        document.getElementById('userForm').style.display = 'block';
     </script>
 </body>
 </html>
