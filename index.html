@@ -154,29 +154,31 @@
         }
 
         function sendToGoogleForm(prize) {
-            const googleFormUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSecjt_qFX4R-h3Br20FDCu8_qb9E8UaoBVgLcP720NHys_7Rg/formResponse';
+            const googleFormUrl = 'https://script.google.com/macros/s/Yhttps://script.google.com/macros/s/AKfycbzP_VZcTd9Y70GKpuXosmMmX7QT1SgX7OsV1VKnh-vxFZY-tFY2GLR6L010A6vqabAz/exec/exec';
             
-            const formData = new FormData();
-            formData.append('entry.2092238618', userData.name);
-            formData.append('entry.2080839788', userData.surname);
-            formData.append('entry.1556369182', userData.email);
-            formData.append('entry.961788203', userData.phone);
-            formData.append('entry.479301265', prize);
-
-            console.log('Dati da inviare:', {
+            const formData = {
                 name: userData.name,
                 surname: userData.surname,
                 email: userData.email,
                 phone: userData.phone,
                 prize: prize
-            });
+            };
+
+            console.log('Dati da inviare:', formData);
 
             fetch(googleFormUrl, {
                 method: 'POST',
                 mode: 'no-cors',
-                body: formData
-            }).then(() => {
-                console.log('Dati inviati con successo al Google Form');
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData)
+            }).then(response => {
+                if (response.type === 'opaque') {
+                    console.log('Risposta opaca ricevuta. Non possiamo verificare lo stato della richiesta.');
+                } else {
+                    console.log('Dati inviati con successo al Google Form');
+                }
             }).catch(error => {
                 console.error('Errore nell\'invio dei dati:', error);
             });
