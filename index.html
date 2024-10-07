@@ -163,6 +163,14 @@
             formData.append('entry.961788203', userData.phone);
             formData.append('entry.479301265', prize);
 
+            console.log('Dati da inviare:', {
+                name: userData.name,
+                surname: userData.surname,
+                email: userData.email,
+                phone: userData.phone,
+                prize: prize
+            });
+
             fetch(googleFormUrl, {
                 method: 'POST',
                 mode: 'no-cors',
