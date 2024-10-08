@@ -154,31 +154,23 @@
         }
 
         function sendToGoogleForm(prize) {
-            const googleFormUrl = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID_HERE/exec';
+            const googleFormUrl = 'https://script.google.com/macros/s/AKfycbyoxkjp6eTtKwM8LY2hY7cMmEMUfgmMIN_zzhGSPirpU_nFNGy7j_d0GDd9aOaoQ4dq/exec';
             
-            const formData = {
-                name: userData.name,
-                surname: userData.surname,
-                email: userData.email,
-                phone: userData.phone,
-                prize: prize
-            };
+            const formData = new FormData();
+            formData.append('name', userData.name);
+            formData.append('surname', userData.surname);
+            formData.append('email', userData.email);
+            formData.append('phone', userData.phone);
+            formData.append('prize', prize);
 
-            console.log('Dati da inviare:', formData);
+            console.log('Dati da inviare:', Object.fromEntries(formData));
 
             fetch(googleFormUrl, {
                 method: 'POST',
                 mode: 'no-cors',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData)
+                body: formData
             }).then(response => {
-                if (response.type === 'opaque') {
-                    console.log('Risposta opaca ricevuta. Non possiamo verificare lo stato della richiesta.');
-                } else {
-                    console.log('Dati inviati con successo al Google Form');
-                }
+                console.log('Dati inviati con successo al Google Form');
             }).catch(error => {
                 console.error('Errore nell\'invio dei dati:', error);
             });
