@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="it">
 <head>
     <meta charset="UTF-8">
@@ -154,7 +153,7 @@
         }
 
         function sendToGoogleForm(prize) {
-            const googleFormUrl = 'https://script.google.com/macros/s/AKfycbz4TNxjg3Ool-MlNJLXOCQCV7O91yzJPQAgxVgbNYIS5dcsbYnDqnZuzoH8vePraPNy/exec';
+            const googleFormUrl = 'https://script.google.com/macros/s/AKfycbyoxkjp6eTtKwM8LY2hY7cMmEMUfgmMIN_zzhGSPirpU_nFNGy7j_d0GDd9aOaoQ4dq/exec';
             
             const formData = new FormData();
             formData.append('name', userData.name);
@@ -167,16 +166,12 @@
 
             fetch(googleFormUrl, {
                 method: 'POST',
-                mode: 'no-cors',  // Imposta no-cors per bypassare CORS
+                mode: 'no-cors',
                 body: formData
-            })
-            .then(() => {
+            }).then(response => {
                 console.log('Dati inviati con successo al Google Form');
-                alert('Dati inviati con successo!');
-            })
-            .catch(error => {
+            }).catch(error => {
                 console.error('Errore nell\'invio dei dati:', error);
-                alert('Si è verificato un errore nell\'invio dei dati. Per favore, riprova più tardi.');
             });
         }
 
