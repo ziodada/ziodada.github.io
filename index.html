@@ -3,139 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Promozione Natalizia 2024 - Antonella Mafucci</title>
+    <title>Promozione Natalizia - Antonella Mafucci</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
-            background-color: #e0e5e9;
+            background-color: #0c4c45;
+            color: #ffffff;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
+            height: 100vh;
             margin: 0;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="%23ffffff" opacity="0.5"/></svg>');
-            background-size: 100px 100px;
-            overflow: hidden;
         }
         .container {
-            background-color: rgba(255, 255, 255, 0.9);
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.2);
             text-align: center;
             max-width: 400px;
-            width: 100%;
-            position: relative;
-            z-index: 1;
-            border: 2px solid #a0b4c5;
         }
         h1 {
-            color: #4a6572;
-            font-size: 2em;
-            margin-bottom: 20px;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            color: #c41e3a;
+            font-size: 2rem;
+            margin-bottom: 1rem;
         }
         input, button {
             display: block;
             width: 100%;
-            padding: 12px;
-            margin: 15px 0;
-            border: 2px solid #a0b4c5;
-            border-radius: 8px;
-            box-sizing: border-box;
-            font-size: 16px;
-            background-color: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
         }
         button {
-            background-color: #a0b4c5;
+            background-color: #c41e3a;
             color: white;
-            border: none;
             cursor: pointer;
-            transition: background-color 0.3s, transform 0.1s;
-            font-weight: bold;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+            transition: background-color 0.3s;
         }
         button:hover {
-            background-color: #8ca2b3;
-            transform: scale(1.05);
+            background-color: #9a1629;
         }
-        #countdown {
-            font-size: 1.4em;
-            margin-bottom: 25px;
-            color: #4a6572;
-            font-weight: bold;
+        #countdown, #result {
+            margin-top: 1rem;
         }
-        .gift-box {
-            width: 100px;
-            height: 100px;
-            background-color: #ffffff;
-            margin: 20px auto;
-            position: relative;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            border: 2px solid #a0b4c5;
-            overflow: hidden;
-        }
-        .gift-box::before, .gift-box::after {
-            content: '';
-            position: absolute;
-            background-color: #a0b4c5;
-        }
-        .gift-box::before {
-            width: 20px;
-            height: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-        .gift-box::after {
-            width: 100%;
-            height: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-        }
-        .gift-box .ribbon {
-            position: absolute;
-            width: 30px;
-            height: 30px;
-            background-color: #c41e3a;
-            top: -15px;
-            left: 50%;
-            transform: translateX(-50%) rotate(45deg);
-        }
-        .snowflake {
-            color: #fff;
-            font-size: 1em;
-            font-family: Arial;
-            text-shadow: 0 0 5px #000;
-            position: fixed;
-            top: -10%;
-            z-index: 0;
-            user-select: none;
-            cursor: default;
-            animation-name: snowflakes-fall, snowflakes-shake;
-            animation-duration: 10s, 3s;
-            animation-timing-function: linear, ease-in-out;
-            animation-iteration-count: infinite, infinite;
-            animation-play-state: running, running;
-        }
-        @keyframes snowflakes-fall {
-            0% { top: -10%; }
-            100% { top: 100%; }
-        }
-        @keyframes snowflakes-shake {
-            0% { transform: translateX(0px); }
-            50% { transform: translateX(80px); }
-            100% { transform: translateX(0px); }
+        #userForm, #gameSection, #result {
+            display: none;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Promozione Natalizia 2024</h1>
+        <h1>Promozione Natalizia</h1>
         <div id="countdown"></div>
-        <div class="gift-box">
-            <div class="ribbon"></div>
-        </div>
         
         <div id="userForm">
             <input type="text" id="name" placeholder="Nome" required>
@@ -145,22 +66,16 @@
             <button onclick="submitUserData()">Partecipa</button>
         </div>
 
-        <div id="gameSection" style="display: none;">
-            <button onclick="play()">Scopri il tuo regalo</button>
+        <div id="gameSection">
+            <button onclick="play()">Gioca Ora</button>
         </div>
 
-        <div id="result" style="display: none;"></div>
+        <div id="result"></div>
     </div>
 
     <script>
-        console.log('Script caricato');
-        window.onerror = function(message, source, lineno, colno, error) {
-            console.error('Errore JavaScript:', message, 'at', source, lineno, colno);
-            console.error('Stack:', error ? error.stack : 'Non disponibile');
-        };
-
         const endDate = new Date();
-        endDate.setDate(endDate.getDate() + 7);
+        endDate.setDate(endDate.getDate() + 7); // Promozione attiva per 7 giorni
 
         const prizes = [
             { name: "Sessione gratuita", probability: 0.01, limit: 1 },
@@ -174,18 +89,18 @@
 
         function updateCountdown() {
             const now = new Date();
-            const difference = endDate - now;
+            const timeLeft = endDate - now;
 
-            if (difference < 0) {
-                clearInterval(countdownTimer);
-                document.getElementById('countdown').innerHTML = "La promozione è terminata!";
+            if (timeLeft <= 0) {
+                document.getElementById('countdown').innerHTML = "Promozione terminata";
+                document.getElementById('userForm').style.display = 'none';
                 return;
             }
 
-            const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+            const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
 
             document.getElementById('countdown').innerHTML = `Tempo rimanente: ${days}g ${hours}h ${minutes}m ${seconds}s`;
         }
@@ -224,20 +139,22 @@
             for (let prize of prizes) {
                 cumulativeProbability += prize.probability;
                 if (rand <= cumulativeProbability) {
-                    if (prize.name === "Sessione gratuita" && freeSessionAwarded >= prize.limit) {
-                        return selectPrize();
-                    }
                     if (prize.name === "Sessione gratuita") {
-                        freeSessionAwarded++;
+                        if (freeSessionAwarded < prize.limit) {
+                            freeSessionAwarded++;
+                            return prize.name;
+                        } else {
+                            return selectPrize();
+                        }
                     }
                     return prize.name;
                 }
             }
-            return prizes[prizes.length - 1].name;
+            return "Sconto del 10%";
         }
 
         function sendToFormspree(prize) {
-            const formspreeUrl = 'https://formspree.io/f/xjkvvvjq';
+            const formspreeUrl = 'https://formspree.io/f/YOUR_FORMSPREE_ID'; // Sostituisci con il tuo ID Formspree
             
             const formData = new FormData();
             formData.append('Nome', userData.name);
@@ -246,8 +163,6 @@
             formData.append('Telefono', userData.phone);
             formData.append('Premio', prize);
 
-            console.log('Invio dati a Formspree:', Object.fromEntries(formData));
-
             fetch(formspreeUrl, {
                 method: 'POST',
                 body: formData,
@@ -255,42 +170,32 @@
                     'Accept': 'application/json'
                 }
             }).then(response => {
-                console.log('Risposta Formspree:', response);
                 if (response.ok) {
-                    console.log('Dati inviati con successo a Formspree');
+                    console.log('Dati inviati con successo');
+                    // Qui puoi aggiungere un messaggio di successo per l'utente
                 } else {
-                    console.error('Errore nell\'invio dei dati a Formspree');
-                    alert('Si è verificato un errore durante l\'invio dei dati. Per favore, riprova più tardi.');
+                    console.error('Errore nell\'invio dei dati');
+                    // Qui puoi aggiungere un messaggio di errore per l'utente
                 }
-                return response.json();
-            }).then(data => {
-                console.log('Dati risposta Formspree:', data);
             }).catch(error => {
                 console.error('Errore di rete:', error);
-                alert('Si è verificato un errore di rete. Per favore, controlla la tua connessione e riprova.');
+                // Qui puoi aggiungere un messaggio di errore per l'utente
             });
         }
 
         function claim(prize) {
-            window.location.href = 'https://website.pixieset.com/pages/GJ4nmx';
-        }
-
-        function createSnowflakes() {
-            const snowflakesCount = 50;
-            const container = document.body;
-            for (let i = 0; i < snowflakesCount; i++) {
-                const snowflake = document.createElement('div');
-                snowflake.className = 'snowflake';
-                snowflake.style.left = `${Math.random() * 100}%`;
-                snowflake.style.animationDelay = `${Math.random() * 10}s`;
-                snowflake.innerHTML = '❄';
-                container.appendChild(snowflake);
-            }
+            const bookingUrl = `https://antonellamafucci.com/prenota?` +
+                               `nome=${encodeURIComponent(userData.name)}` +
+                               `&cognome=${encodeURIComponent(userData.surname)}` +
+                               `&email=${encodeURIComponent(userData.email)}` +
+                               `&telefono=${encodeURIComponent(userData.phone)}` +
+                               `&premio=${encodeURIComponent(prize)}`;
+            window.location.href = bookingUrl;
         }
 
         updateCountdown();
-        const countdownTimer = setInterval(updateCountdown, 1000);
-        createSnowflakes();
+        setInterval(updateCountdown, 1000);
+        document.getElementById('userForm').style.display = 'block';
     </script>
 </body>
 </html>
