@@ -1,27 +1,98 @@
-display: flex;
-justify-content: center;
-align-items: center;
-            height: 100vh;
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Promozione Natalizia 2024 - Antonella Mafucci</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #e0e5e9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             min-height: 100vh;
-margin: 0;
-background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="%23ffffff" opacity="0.5"/></svg>');
-background-size: 100px 100px;
+            margin: 0;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="%23ffffff" opacity="0.5"/></svg>');
+            background-size: 100px 100px;
             overflow: hidden;
-}
-.container {
-background-color: rgba(255, 255, 255, 0.9);
-@@ -73,6 +74,7 @@
-border-radius: 10px;
-box-shadow: 0 0 10px rgba(0,0,0,0.1);
-border: 2px solid #a0b4c5;
+        }
+        .container {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+            border: 2px solid #a0b4c5;
+        }
+        h1 {
+            color: #4a6572;
+            font-size: 2em;
+            margin-bottom: 20px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        input, button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin: 15px 0;
+            border: 2px solid #a0b4c5;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 16px;
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+        button {
+            background-color: #a0b4c5;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+        button:hover {
+            background-color: #8ca2b3;
+            transform: scale(1.05);
+        }
+        #countdown {
+            font-size: 1.4em;
+            margin-bottom: 25px;
+            color: #4a6572;
+            font-weight: bold;
+        }
+        .gift-box {
+            width: 100px;
+            height: 100px;
+            background-color: #ffffff;
+            margin: 20px auto;
+            position: relative;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border: 2px solid #a0b4c5;
             overflow: hidden;
-}
-.gift-box::before, .gift-box::after {
-content: '';
-@@ -91,6 +93,15 @@
-top: 50%;
-transform: translateY(-50%);
-}
+        }
+        .gift-box::before, .gift-box::after {
+            content: '';
+            position: absolute;
+            background-color: #a0b4c5;
+        }
+        .gift-box::before {
+            width: 20px;
+            height: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .gift-box::after {
+            width: 100%;
+            height: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
         .gift-box .ribbon {
             position: absolute;
             width: 30px;
@@ -31,25 +102,57 @@ transform: translateY(-50%);
             left: 50%;
             transform: translateX(-50%) rotate(45deg);
         }
-.snowflake {
-color: #fff;
-font-size: 1em;
-@@ -122,7 +133,9 @@
-<div class="container">
-<h1>Promozione Natalizia 2024</h1>
-<div id="countdown"></div>
-        <div class="gift-box"></div>
+        .snowflake {
+            color: #fff;
+            font-size: 1em;
+            font-family: Arial;
+            text-shadow: 0 0 5px #000;
+            position: fixed;
+            top: -10%;
+            z-index: 0;
+            user-select: none;
+            cursor: default;
+            animation-name: snowflakes-fall, snowflakes-shake;
+            animation-duration: 10s, 3s;
+            animation-timing-function: linear, ease-in-out;
+            animation-iteration-count: infinite, infinite;
+            animation-play-state: running, running;
+        }
+        @keyframes snowflakes-fall {
+            0% { top: -10%; }
+            100% { top: 100%; }
+        }
+        @keyframes snowflakes-shake {
+            0% { transform: translateX(0px); }
+            50% { transform: translateX(80px); }
+            100% { transform: translateX(0px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Promozione Natalizia 2024</h1>
+        <div id="countdown"></div>
         <div class="gift-box">
             <div class="ribbon"></div>
         </div>
+        
+        <div id="userForm">
+            <input type="text" id="name" placeholder="Nome" required>
+            <input type="text" id="surname" placeholder="Cognome" required>
+            <input type="email" id="email" placeholder="Email" required>
+            <input type="tel" id="phone" placeholder="Telefono" required>
+            <button onclick="submitUserData()">Partecipa</button>
+        </div>
 
-<div id="userForm">
-<input type="text" id="name" placeholder="Nome" required>
-@@ -140,13 +153,144 @@ <h1>Promozione Natalizia 2024</h1>
-</div>
+        <div id="gameSection" style="display: none;">
+            <button onclick="play()">Scopri il tuo regalo</button>
+        </div>
 
-<script>
-        // ... [Il codice JavaScript rimane lo stesso dell'esempio precedente] ...
+        <div id="result" style="display: none;"></div>
+    </div>
+
+    <script>
         console.log('Script caricato');
         window.onerror = function(message, source, lineno, colno, error) {
             console.error('Errore JavaScript:', message, 'at', source, lineno, colno);
@@ -168,8 +271,7 @@ font-size: 1em;
             });
         }
 
-function claim(prize) {
-            window.location.href = 'https://antonellamafucciphotography.pixieset.com/booking/natale-2024';
+        function claim(prize) {
             window.location.href = 'https://website.pixieset.com/pages/GJ4nmx';
         }
 
@@ -184,12 +286,11 @@ function claim(prize) {
                 snowflake.innerHTML = '❄';
                 container.appendChild(snowflake);
             }
-}
+        }
 
-        // ... [Resto del codice JavaScript] ...
         updateCountdown();
         const countdownTimer = setInterval(updateCountdown, 1000);
         createSnowflakes();
-</script>
+    </script>
 </body>
 </html>
