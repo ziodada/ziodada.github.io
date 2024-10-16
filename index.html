@@ -4,137 +4,192 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Promozione Natalizia 2024 - Antonella Mafucci</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Arial', sans-serif;
-            background-color: #e0e5e9;
+            font-family: 'Roboto', sans-serif;
+            background-color: #f0f0f0;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="%23ffffff" opacity="0.5"/></svg>');
-            background-size: 100px 100px;
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px);
+            background-size: 20px 20px;
             overflow: hidden;
         }
         .container {
-            background-color: rgba(255, 255, 255, 0.9);
+            background-color: white;
             padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             text-align: center;
             max-width: 400px;
             width: 100%;
             position: relative;
             z-index: 1;
-            border: 2px solid #a0b4c5;
         }
         h1 {
-            color: #4a6572;
-            font-size: 2em;
+            font-family: 'Playfair Display', serif;
+            color: #2c3e50;
+            font-size: 2.2em;
             margin-bottom: 20px;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            letter-spacing: 1px;
         }
         input, button {
             display: block;
             width: 100%;
             padding: 12px;
             margin: 15px 0;
-            border: 2px solid #a0b4c5;
-            border-radius: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
             box-sizing: border-box;
             font-size: 16px;
-            background-color: rgba(255, 255, 255, 0.8);
+            transition: all 0.3s ease;
+        }
+        input:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
         }
         button {
-            background-color: #a0b4c5;
+            background-color: #3498db;
             color: white;
             border: none;
             cursor: pointer;
-            transition: background-color 0.3s, transform 0.1s;
+            transition: all 0.3s;
             font-weight: bold;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
         button:hover {
-            background-color: #8ca2b3;
-            transform: scale(1.05);
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
         }
         #countdown {
-            font-size: 1.4em;
+            font-size: 1.2em;
             margin-bottom: 25px;
-            color: #4a6572;
-            font-weight: bold;
+            color: #2c3e50;
+            font-weight: 300;
         }
         .gift-box {
-            width: 100px;
-            height: 100px;
-            background-color: #ffffff;
-            margin: 20px auto;
+            width: 150px;
+            height: 150px;
+            margin: 30px auto;
             position: relative;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            border: 2px solid #a0b4c5;
-            overflow: hidden;
+            perspective: 1000px;
+            animation: float 3s ease-in-out infinite;
         }
-        .gift-box::before, .gift-box::after {
+        .gift-box-inner {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+        }
+        .gift-box:hover .gift-box-inner {
+            transform: rotateY(180deg);
+        }
+        .gift-box-front, .gift-box-back, .gift-box-right, .gift-box-left, .gift-box-top, .gift-box-bottom {
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            backface-visibility: hidden;
+        }
+        .gift-box-front { 
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            transform: translateZ(75px);
+        }
+        .gift-box-back { 
+            background: linear-gradient(45deg, #c0392b, #e74c3c);
+            transform: rotateY(180deg) translateZ(75px);
+        }
+        .gift-box-right {
+            background: #d35400;
+            transform: rotateY(90deg) translateZ(75px);
+        }
+        .gift-box-left {
+            background: #e67e22;
+            transform: rotateY(-90deg) translateZ(75px);
+        }
+        .gift-box-top {
+            background: #f39c12;
+            transform: rotateX(-90deg) translateZ(75px);
+        }
+        .gift-box-bottom {
+            background: #f1c40f;
+            transform: rotateX(90deg) translateZ(75px);
+        }
+        .gift-box-ribbon {
+            position: absolute;
+            width: 30px;
+            height: 150px;
+            background-color: #f1c40f;
+            left: 60px;
+            top: 0;
+            z-index: 2;
+        }
+        .gift-box-ribbon::before {
             content: '';
             position: absolute;
-            background-color: #a0b4c5;
+            width: 150px;
+            height: 30px;
+            background-color: #f1c40f;
+            left: -60px;
+            top: 60px;
         }
-        .gift-box::before {
-            width: 20px;
-            height: 100%;
-            left: 50%;
-            transform: translateX(-50%);
+        .gift-box-bow {
+            width: 60px;
+            height: 60px;
+            background-color: #f1c40f;
+            border-radius: 50%;
+            position: absolute;
+            top: -30px;
+            left: 45px;
+            z-index: 3;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
-        .gift-box::after {
-            width: 100%;
-            height: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-        }
-        .gift-box .ribbon {
+        .gift-box-bow::before, .gift-box-bow::after {
+            content: '';
             position: absolute;
             width: 30px;
             height: 30px;
-            background-color: #c41e3a;
-            top: -15px;
-            left: 50%;
-            transform: translateX(-50%) rotate(45deg);
+            background-color: #f1c40f;
+            border-radius: 50%;
         }
-        .snowflake {
-            color: #fff;
-            font-size: 1em;
-            font-family: Arial;
-            text-shadow: 0 0 5px #000;
-            position: fixed;
-            top: -10%;
-            z-index: 0;
-            user-select: none;
-            cursor: default;
-            animation-name: snowflakes-fall, snowflakes-shake;
-            animation-duration: 10s, 3s;
-            animation-timing-function: linear, ease-in-out;
-            animation-iteration-count: infinite, infinite;
-            animation-play-state: running, running;
+        .gift-box-bow::before {
+            top: 15px;
+            left: -15px;
         }
-        @keyframes snowflakes-fall {
-            0% { top: -10%; }
-            100% { top: 100%; }
+        .gift-box-bow::after {
+            top: 15px;
+            right: -15px;
         }
-        @keyframes snowflakes-shake {
-            0% { transform: translateX(0px); }
-            50% { transform: translateX(80px); }
-            100% { transform: translateX(0px); }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Promozione Natalizia 2024</h1>
-        <div id="countdown"></div>
+        <div id="countdown">Tempo rimanente: 7g 0h 0m 0s</div>
         <div class="gift-box">
-            <div class="ribbon"></div>
+            <div class="gift-box-inner">
+                <div class="gift-box-front"></div>
+                <div class="gift-box-back"></div>
+                <div class="gift-box-right"></div>
+                <div class="gift-box-left"></div>
+                <div class="gift-box-top"></div>
+                <div class="gift-box-bottom"></div>
+            </div>
+            <div class="gift-box-ribbon"></div>
+            <div class="gift-box-bow"></div>
         </div>
         
         <div id="userForm">
@@ -153,31 +208,13 @@
     </div>
 
     <script>
-        console.log('Script caricato');
-        window.onerror = function(message, source, lineno, colno, error) {
-            console.error('Errore JavaScript:', message, 'at', source, lineno, colno);
-            console.error('Stack:', error ? error.stack : 'Non disponibile');
-        };
-
-        const endDate = new Date();
-        endDate.setDate(endDate.getDate() + 7);
-
-        const prizes = [
-            { name: "Sessione gratuita", probability: 0.01, limit: 1 },
-            { name: "Sconto del 20%", probability: 0.3 },
-            { name: "Sconto del 10%", probability: 0.49 },
-            { name: "Pannello 20x20", probability: 0.2 }
-        ];
-
-        let freeSessionAwarded = 0;
-        let userData = {};
-
         function updateCountdown() {
+            const endDate = new Date();
+            endDate.setDate(endDate.getDate() + 7);
             const now = new Date();
             const difference = endDate - now;
 
             if (difference < 0) {
-                clearInterval(countdownTimer);
                 document.getElementById('countdown').innerHTML = "La promozione è terminata!";
                 return;
             }
@@ -191,12 +228,12 @@
         }
 
         function submitUserData() {
-            userData.name = document.getElementById('name').value;
-            userData.surname = document.getElementById('surname').value;
-            userData.email = document.getElementById('email').value;
-            userData.phone = document.getElementById('phone').value;
+            const name = document.getElementById('name').value;
+            const surname = document.getElementById('surname').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
 
-            if (!userData.name || !userData.surname || !userData.email || !userData.phone) {
+            if (!name || !surname || !email || !phone) {
                 alert('Per favore, compila tutti i campi.');
                 return;
             }
@@ -206,91 +243,36 @@
         }
 
         function play() {
-            const prize = selectPrize();
+            const prizes = [
+                { name: "Sessione gratuita", probability: 0.01 },
+                { name: "Sconto del 20%", probability: 0.3 },
+                { name: "Sconto del 10%", probability: 0.49 },
+                { name: "Pannello 20x20", probability: 0.2 }
+            ];
+
+            const rand = Math.random();
+            let cumulativeProbability = 0;
+            let prize;
+
+            for (let p of prizes) {
+                cumulativeProbability += p.probability;
+                if (rand <= cumulativeProbability) {
+                    prize = p.name;
+                    break;
+                }
+            }
+
             document.getElementById('gameSection').style.display = 'none';
             document.getElementById('result').style.display = 'block';
             document.getElementById('result').innerHTML = `
-                <h2>Congratulazioni, ${userData.name} ${userData.surname}!</h2>
+                <h2>Congratulazioni!</h2>
                 <p>Hai vinto: ${prize}</p>
-                <button onclick="claim('${prize}')">Prenota Ora</button>
+                <button onclick="window.location.href='https://website.pixieset.com/pages/GJ4nmx'">Prenota Ora</button>
             `;
-
-            sendToFormspree(prize);
-        }
-
-        function selectPrize() {
-            const rand = Math.random();
-            let cumulativeProbability = 0;
-            for (let prize of prizes) {
-                cumulativeProbability += prize.probability;
-                if (rand <= cumulativeProbability) {
-                    if (prize.name === "Sessione gratuita" && freeSessionAwarded >= prize.limit) {
-                        return selectPrize();
-                    }
-                    if (prize.name === "Sessione gratuita") {
-                        freeSessionAwarded++;
-                    }
-                    return prize.name;
-                }
-            }
-            return prizes[prizes.length - 1].name;
-        }
-
-        function sendToFormspree(prize) {
-            const formspreeUrl = 'https://formspree.io/f/xjkvvvjq';
-            
-            const formData = new FormData();
-            formData.append('Nome', userData.name);
-            formData.append('Cognome', userData.surname);
-            formData.append('Email', userData.email);
-            formData.append('Telefono', userData.phone);
-            formData.append('Premio', prize);
-
-            console.log('Invio dati a Formspree:', Object.fromEntries(formData));
-
-            fetch(formspreeUrl, {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'Accept': 'application/json'
-                }
-            }).then(response => {
-                console.log('Risposta Formspree:', response);
-                if (response.ok) {
-                    console.log('Dati inviati con successo a Formspree');
-                } else {
-                    console.error('Errore nell\'invio dei dati a Formspree');
-                    alert('Si è verificato un errore durante l\'invio dei dati. Per favore, riprova più tardi.');
-                }
-                return response.json();
-            }).then(data => {
-                console.log('Dati risposta Formspree:', data);
-            }).catch(error => {
-                console.error('Errore di rete:', error);
-                alert('Si è verificato un errore di rete. Per favore, controlla la tua connessione e riprova.');
-            });
-        }
-
-        function claim(prize) {
-            window.location.href = 'https://website.pixieset.com/pages/GJ4nmx';
-        }
-
-        function createSnowflakes() {
-            const snowflakesCount = 50;
-            const container = document.body;
-            for (let i = 0; i < snowflakesCount; i++) {
-                const snowflake = document.createElement('div');
-                snowflake.className = 'snowflake';
-                snowflake.style.left = `${Math.random() * 100}%`;
-                snowflake.style.animationDelay = `${Math.random() * 10}s`;
-                snowflake.innerHTML = '❄';
-                container.appendChild(snowflake);
-            }
         }
 
         updateCountdown();
-        const countdownTimer = setInterval(updateCountdown, 1000);
-        createSnowflakes();
+        setInterval(updateCountdown, 1000);
     </script>
 </body>
 </html>
