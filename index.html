@@ -14,6 +14,7 @@
             align-items: center;
             height: 100vh;
             margin: 0;
+            overflow: hidden;
         }
         .container {
             background-color: rgba(255, 255, 255, 0.1);
@@ -22,11 +23,14 @@
             box-shadow: 0 0 20px rgba(0,0,0,0.2);
             text-align: center;
             max-width: 400px;
+            position: relative;
+            z-index: 1;
         }
         h1 {
             color: #c41e3a;
             font-size: 2rem;
             margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
         }
         input, button {
             display: block;
@@ -40,16 +44,38 @@
             background-color: #c41e3a;
             color: white;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: all 0.3s;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
         button:hover {
             background-color: #9a1629;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0,0,0,0.15);
         }
         #countdown, #result {
             margin-top: 1rem;
         }
         #userForm, #gameSection, #result {
             display: none;
+        }
+        /* Effetto neve */
+        .snowflake {
+            color: #fff;
+            font-size: 1em;
+            font-family: Arial;
+            text-shadow: 0 0 1px #000;
+            position: fixed;
+            top: -10%;
+            z-index: 0;
+            animation: fall linear infinite;
+        }
+        @keyframes fall {
+            to {
+                transform: translateY(100vh);
+            }
         }
     </style>
 </head>
@@ -73,7 +99,13 @@
         <div id="result"></div>
     </div>
 
+    <audio id="christmasMusic" loop>
+        <source src="https://github.com/ziodada/ziodada.github.io/blob/main/Sottofondo%20natale.mp3" type="audio/mpeg">
+        Il tuo browser non supporta l'elemento audio.
+    </audio>
+
     <script>
+        // Il codice JavaScript esistente rimane invariato
         const endDate = new Date();
         endDate.setDate(endDate.getDate() + 7); // Promozione attiva per 7 giorni
 
@@ -196,6 +228,29 @@
         updateCountdown();
         setInterval(updateCountdown, 1000);
         document.getElementById('userForm').style.display = 'block';
+
+        // Nuovo codice per l'effetto neve
+        function createSnowflake() {
+            const snowflake = document.createElement('div');
+            snowflake.classList.add('snowflake');
+            snowflake.innerHTML = '❄';
+            snowflake.style.left = Math.random() * 100 + '%';
+            snowflake.style.animationDuration = Math.random() * 3 + 2 + 's';
+            snowflake.style.opacity = Math.random();
+            snowflake.style.fontSize = Math.random() * 10 + 10 + 'px';
+            document.body.appendChild(snowflake);
+
+            setTimeout(() => {
+                snowflake.remove();
+            }, 5000);
+        }
+
+        setInterval(createSnowflake, 100);
+
+        // Avvia la musica di Natale
+        window.addEventListener('load', function() {
+            document.getElementById('christmasMusic').play();
+        });
     </script>
 </body>
 </html>
