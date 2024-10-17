@@ -89,6 +89,13 @@
   Il tuo browser non supporta l'elemento audio.
 </audio>
     <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var audio = document.getElementById('christmasMusic');
+    audio.play();
+  });
+</script>
+
+    <script>
         const endDate = new Date();
         endDate.setDate(endDate.getDate() + 7);
 
