@@ -14,6 +14,7 @@
             align-items: center;
             height: 100vh;
             margin: 0;
+            overflow: hidden;
         }
         .container {
             background-color: rgba(255, 255, 255, 0.1);
@@ -22,15 +23,18 @@
             box-shadow: 0 0 20px rgba(0,0,0,0.2);
             text-align: center;
             max-width: 400px;
+            position: relative;
+            z-index: 1;
         }
         h1 {
             color: #c41e3a;
             font-size: 2rem;
             margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
         }
         input, button {
             display: block;
-            width: 100%;
+            width: calc(100% - 20px);
             padding: 10px;
             margin: 10px 0;
             border: none;
@@ -41,74 +45,94 @@
             background-color: #c41e3a;
             color: white;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: all 0.3s;
             font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            width: 100%;
         }
         button:hover {
             background-color: #9a1629;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0,0,0,0.15);
         }
         #countdown, #result {
             margin-top: 1rem;
         }
-        #userForm, #gameSection, #result, #finalForm {
+        #userForm, #gameSection, #result {
             display: none;
+        }
+        .snowflake {
+            color: #fff;
+            font-size: 1em;
+            font-family: Arial;
+            text-shadow: 0 0 1px #000;
+            position: fixed;
+            top: -10%;
+            z-index: 0;
+            animation: fall linear infinite;
+            user-select: none;
+        }
+        @keyframes fall {
+            to {
+                transform: translateY(100vh);
+            }
+        }
+        #playMusicBtn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background-color: rgba(255, 255, 255, 0.2);
+            border: 1px solid white;
+            color: white;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 5px;
         }
     </style>
 </head>
 <body>
+    <button id="playMusicBtn">▶ Riproduci Musica</button>
     <div class="container">
         <h1>Promozione Natalizia</h1>
         <div id="countdown"></div>
-        
-        <div id="userForm">
-            <input type="text" id="name" placeholder="Nome" required>
-            <input type="text" id="surname" placeholder="Cognome" required>
-            <input type="email" id="email" placeholder="Email" required>
-            <input type="tel" id="phone" placeholder="Telefono" required>
-            <button onclick="submitUserData()">Partecipa</button>
-        </div>
-
+        <form id="userForm" action="https://formspree.io/f/xyzygrwg" method="POST">
+            <input type="text" id="name" name="nome" placeholder="Nome" required>
+            <input type="text" id="surname" name="cognome" placeholder="Cognome" required>
+            <input type="email" id="email" name="email" placeholder="Email" required>
+            <input type="tel" id="phone" name="telefono" placeholder="Telefono" required>
+            <input type="hidden" id="premio" name="premio" value="">
+            <button type="button" onclick="submitUserData()">Partecipa</button>
+        </form>
         <div id="gameSection">
             <button onclick="play()">Gioca Ora</button>
         </div>
-
         <div id="result"></div>
-
-        <!-- Form nascosto per Formspree -->
-        <form id="finalForm" action="https://formspree.io/f/xyzygrwg" method="POST">
-            <input type="text" name="nome" id="formName">
-            <input type="text" name="cognome" id="formSurname">
-            <input type="email" name="email" id="formEmail">
-            <input type="tel" name="telefono" id="formPhone">
-            <input type="text" name="premio" id="formPrize">
-            <button type="submit">Conferma Premio</button>
-        </form>
     </div>
-    <audio id="christmasMusic" autoplay loop preload="auto">
-  <source src="https://github.com/ziodada/ziodada.github.io/raw/refs/heads/main/Sottofondo%20natale.mp3" type="audio/mpeg">
-  Il tuo browser non supporta l'elemento audio.
-</audio>
-    <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    var audio = document.getElementById('christmasMusic');
-    audio.play();
-  });
-</script>
+
+    <audio id="christmasMusic" loop>
+        <source src="https://raw.githubusercontent.com/ziodada/ziodada.github.io/main/Sottofondo%20natale.mp3" type="audio/mpeg">
+        Il tuo browser non supporta l'elemento audio.
+    </audio>
 
     <script>
+        // Variabili globali
         const endDate = new Date();
         endDate.setDate(endDate.getDate() + 7);
-
+        
         const prizes = [
             { name: "Sessione gratuita", probability: 0.01, limit: 1 },
             { name: "Sconto del 20%", probability: 0.3 },
             { name: "Sconto del 10%", probability: 0.49 },
             { name: "Pannello 20x20", probability: 0.2 }
         ];
-
+        
         let freeSessionAwarded = 0;
         let userData = {};
 
+        // Funzione countdown
         function updateCountdown() {
             const now = new Date();
             const timeLeft = endDate - now;
@@ -124,8 +148,18 @@
             const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
             const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
 
-            document.getElementById('countdown').innerHTML = `Tempo rimanente: ${days}g ${hours}h ${minutes}m ${seconds}s`;
+            document.getElementById('countdown').innerHTML = 
+                `Tempo rimanente: ${days}g ${hours}h ${minutes}m ${seconds}s`;
         }
+
+        // Gestione musica
+        const music = document.getElementById('christmasMusic');
+        const playMusicBtn = document.getElementById('playMusicBtn');
+
+        playMusicBtn.addEventListener('click', () => {
+            music.play();
+            playMusicBtn.style.display = 'none';
+        });
 
         function submitUserData() {
             userData.name = document.getElementById('name').value;
@@ -142,33 +176,10 @@
             document.getElementById('gameSection').style.display = 'block';
         }
 
-        function play() {
-            const prize = selectPrize();
-            document.getElementById('gameSection').style.display = 'none';
-            document.getElementById('result').style.display = 'block';
-
-            // Popola il form di Formspree con i dati
-            document.getElementById('formName').value = userData.name;
-            document.getElementById('formSurname').value = userData.surname;
-            document.getElementById('formEmail').value = userData.email;
-            document.getElementById('formPhone').value = userData.phone;
-            document.getElementById('formPrize').value = prize;
-
-            document.getElementById('result').innerHTML = `
-                <h2>Congratulazioni, ${userData.name} ${userData.surname}!</h2>
-                <p>Hai vinto: ${prize}</p>
-                <button onclick="showFinalForm()">Riscatta Premio</button>
-            `;
-        }
-
-        function showFinalForm() {
-            document.getElementById('result').style.display = 'none';
-            document.getElementById('finalForm').style.display = 'block';
-        }
-
         function selectPrize() {
             const rand = Math.random();
             let cumulativeProbability = 0;
+            
             for (let prize of prizes) {
                 cumulativeProbability += prize.probability;
                 if (rand <= cumulativeProbability) {
@@ -186,6 +197,44 @@
             return "Sconto del 10%";
         }
 
+        function play() {
+            const prize = selectPrize();
+            document.getElementById('premio').value = prize;
+            document.getElementById('gameSection').style.display = 'none';
+            document.getElementById('result').style.display = 'block';
+            
+            document.getElementById('result').innerHTML = `
+                <h2>Congratulazioni, ${userData.name} ${userData.surname}!</h2>
+                <p>Hai vinto: ${prize}</p>
+                <form action="https://formspree.io/f/xyzygrwg" method="POST">
+                    <input type="hidden" name="nome" value="${userData.name}">
+                    <input type="hidden" name="cognome" value="${userData.surname}">
+                    <input type="hidden" name="email" value="${userData.email}">
+                    <input type="hidden" name="telefono" value="${userData.phone}">
+                    <input type="hidden" name="premio" value="${prize}">
+                    <button type="submit">Prenota Ora</button>
+                </form>
+            `;
+        }
+
+        // Effetto neve
+        function createSnowflake() {
+            const snowflake = document.createElement('div');
+            snowflake.classList.add('snowflake');
+            snowflake.innerHTML = '❄';
+            snowflake.style.left = Math.random() * 100 + '%';
+            snowflake.style.animationDuration = Math.random() * 3 + 2 + 's';
+            snowflake.style.opacity = Math.random();
+            snowflake.style.fontSize = Math.random() * 10 + 10 + 'px';
+            document.body.appendChild(snowflake);
+            
+            setTimeout(() => {
+                snowflake.remove();
+            }, 5000);
+        }
+
+        // Inizializzazione
+        setInterval(createSnowflake, 50);
         updateCountdown();
         setInterval(updateCountdown, 1000);
         document.getElementById('userForm').style.display = 'block';
