@@ -34,11 +34,12 @@
         }
         input, button {
             display: block;
-            width: 100%;
+            width: calc(100% - 20px); /* Sottraiamo il padding per mantenere l'allineamento */
             padding: 10px;
             margin: 10px 0;
             border: none;
             border-radius: 5px;
+            box-sizing: border-box; /* Aggiunto per garantire la larghezza corretta */
         }
         button {
             background-color: #c41e3a;
@@ -61,7 +62,6 @@
         #userForm, #gameSection, #result {
             display: none;
         }
-        /* Effetto neve */
         .snowflake {
             color: #fff;
             font-size: 1em;
@@ -99,15 +99,15 @@
         <div id="result"></div>
     </div>
 
-    <audio id="christmasMusic" loop>
-        <source src="https://github.com/ziodada/ziodada.github.io/blob/main/Sottofondo%20natale.mp3" type="audio/mpeg">
+    <audio id="christmasMusic" loop preload="auto">
+        <source src="https://raw.githubusercontent.com/ziodada/ziodada.github.io/main/Sottofondo%20natale.mp3" type="audio/mpeg">
         Il tuo browser non supporta l'elemento audio.
     </audio>
 
     <script>
-        // Il codice JavaScript esistente rimane invariato
+        // Codice JavaScript esistente...
         const endDate = new Date();
-        endDate.setDate(endDate.getDate() + 7); // Promozione attiva per 7 giorni
+        endDate.setDate(endDate.getDate() + 7);
 
         const prizes = [
             { name: "Sessione gratuita", probability: 0.01, limit: 1 },
@@ -186,32 +186,33 @@
         }
 
         function sendToFormspree(prize) {
-            const formspreeUrl = 'https://formspree.io/f/YOUR_FORMSPREE_ID'; // Sostituisci con il tuo ID Formspree
-            
-            const formData = new FormData();
-            formData.append('Nome', userData.name);
-            formData.append('Cognome', userData.surname);
-            formData.append('Email', userData.email);
-            formData.append('Telefono', userData.phone);
-            formData.append('Premio', prize);
+            const formData = {
+                nome: userData.name,
+                cognome: userData.surname,
+                email: userData.email,
+                telefono: userData.phone,
+                premio: prize
+            };
 
-            fetch(formspreeUrl, {
+            fetch('https://formspree.io/f/YOUR_FORMSPREE_ID', {
                 method: 'POST',
-                body: formData,
                 headers: {
+                    'Content-Type': 'application/json',
                     'Accept': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Errore nell\'invio dei dati');
                 }
-            }).then(response => {
-                if (response.ok) {
-                    console.log('Dati inviati con successo');
-                    // Qui puoi aggiungere un messaggio di successo per l'utente
-                } else {
-                    console.error('Errore nell\'invio dei dati');
-                    // Qui puoi aggiungere un messaggio di errore per l'utente
-                }
-            }).catch(error => {
-                console.error('Errore di rete:', error);
-                // Qui puoi aggiungere un messaggio di errore per l'utente
+                return response.json();
+            })
+            .then(data => {
+                console.log('Dati inviati con successo:', data);
+            })
+            .catch(error => {
+                console.error('Errore:', error);
             });
         }
 
@@ -225,11 +226,33 @@
             window.location.href = bookingUrl;
         }
 
-        updateCountdown();
-        setInterval(updateCountdown, 1000);
-        document.getElementById('userForm').style.display = 'block';
+        // Gestione musica
+        window.addEventListener('load', function() {
+            const music = document.getElementById('christmasMusic');
+            music.volume = 0.5; // Volume al 50%
+            
+            // Tentativo di riproduzione automatica
+            const playPromise = music.play();
+            
+            if (playPromise !== undefined) {
+                playPromise.catch(error => {
+                    console.log("Autoplay prevented");
+                    // Creiamo un pulsante per l'interazione utente se necessario
+                    if (!document.getElementById('playButton')) {
+                        const playButton = document.createElement('button');
+                        playButton.innerHTML = "▶ Avvia Musica";
+                        playButton.style.position = "fixed";
+                        playButton.style.bottom = "20px";
+                        playButton.style.right = "20px";
+                        playButton.style.zIndex = "1000";
+                        playButton.onclick = () => music.play();
+                        document.body.appendChild(playButton);
+                    }
+                });
+            }
+        });
 
-        // Nuovo codice per l'effetto neve
+        // Effetto neve
         function createSnowflake() {
             const snowflake = document.createElement('div');
             snowflake.classList.add('snowflake');
@@ -245,12 +268,10 @@
             }, 5000);
         }
 
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
         setInterval(createSnowflake, 100);
-
-        // Avvia la musica di Natale
-        window.addEventListener('load', function() {
-            document.getElementById('christmasMusic').play();
-        });
+        document.getElementById('userForm').style.display = 'block';
     </script>
 </body>
 </html>
