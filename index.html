@@ -50,7 +50,7 @@
         #countdown, #result {
             margin-top: 1rem;
         }
-        #userForm, #gameSection, #result {
+        #userForm, #gameSection, #result, #finalForm {
             display: none;
         }
     </style>
@@ -60,20 +60,29 @@
         <h1>Promozione Natalizia</h1>
         <div id="countdown"></div>
         
-        <form id="userForm" action="https://formspree.io/f/xyzygrwg" method="POST">
-            <input type="text" name="nome" id="name" placeholder="Nome" required>
-            <input type="text" name="cognome" id="surname" placeholder="Cognome" required>
-            <input type="email" name="email" id="email" placeholder="Email" required>
-            <input type="tel" name="telefono" id="phone" placeholder="Telefono" required>
-            <input type="hidden" name="premio" id="prize">
-            <button type="button" onclick="submitUserData()">Partecipa</button>
-        </form>
+        <div id="userForm">
+            <input type="text" id="name" placeholder="Nome" required>
+            <input type="text" id="surname" placeholder="Cognome" required>
+            <input type="email" id="email" placeholder="Email" required>
+            <input type="tel" id="phone" placeholder="Telefono" required>
+            <button onclick="submitUserData()">Partecipa</button>
+        </div>
 
         <div id="gameSection">
             <button onclick="play()">Gioca Ora</button>
         </div>
 
         <div id="result"></div>
+
+        <!-- Form nascosto per Formspree -->
+        <form id="finalForm" action="https://formspree.io/f/xyzygrwg" method="POST">
+            <input type="text" name="nome" id="formName">
+            <input type="text" name="cognome" id="formSurname">
+            <input type="email" name="email" id="formEmail">
+            <input type="tel" name="telefono" id="formPhone">
+            <input type="text" name="premio" id="formPrize">
+            <button type="submit">Conferma Premio</button>
+        </form>
     </div>
 
     <script>
@@ -127,11 +136,24 @@
             const prize = selectPrize();
             document.getElementById('gameSection').style.display = 'none';
             document.getElementById('result').style.display = 'block';
+
+            // Popola il form di Formspree con i dati
+            document.getElementById('formName').value = userData.name;
+            document.getElementById('formSurname').value = userData.surname;
+            document.getElementById('formEmail').value = userData.email;
+            document.getElementById('formPhone').value = userData.phone;
+            document.getElementById('formPrize').value = prize;
+
             document.getElementById('result').innerHTML = `
                 <h2>Congratulazioni, ${userData.name} ${userData.surname}!</h2>
                 <p>Hai vinto: ${prize}</p>
-                <button onclick="submitToFormspree('${prize}')">Riscatta Premio</button>
+                <button onclick="showFinalForm()">Riscatta Premio</button>
             `;
+        }
+
+        function showFinalForm() {
+            document.getElementById('result').style.display = 'none';
+            document.getElementById('finalForm').style.display = 'block';
         }
 
         function selectPrize() {
@@ -152,12 +174,6 @@
                 }
             }
             return "Sconto del 10%";
-        }
-
-        function submitToFormspree(prize) {
-            document.getElementById('prize').value = prize;
-            const form = document.getElementById('userForm');
-            form.submit();
         }
 
         updateCountdown();
