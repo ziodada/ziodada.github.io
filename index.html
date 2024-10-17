@@ -34,7 +34,7 @@
         }
         input, button {
             display: block;
-            width: calc(100% - 20px);
+            width: 100%;
             padding: 10px;
             margin: 10px 0;
             border: none;
@@ -50,7 +50,6 @@
             text-transform: uppercase;
             letter-spacing: 1px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            width: 100%;
         }
         button:hover {
             background-color: #9a1629;
@@ -60,7 +59,7 @@
         #countdown, #result {
             margin-top: 1rem;
         }
-        #userForm, #gameSection, #result {
+        #gameSection, #result {
             display: none;
         }
         .snowflake {
@@ -80,16 +79,7 @@
             }
         }
         #playMusicBtn {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1000;
-            background-color: rgba(255, 255, 255, 0.2);
-            border: 1px solid white;
-            color: white;
-            padding: 10px;
-            cursor: pointer;
-            border-radius: 5px;
+            display: none;
         }
     </style>
 </head>
@@ -112,7 +102,7 @@
         <div id="result"></div>
     </div>
 
-    <audio id="christmasMusic" loop>
+    <audio id="christmasMusic" loop autoplay>
         <source src="https://raw.githubusercontent.com/ziodada/ziodada.github.io/main/Sottofondo%20natale.mp3" type="audio/mpeg">
         Il tuo browser non supporta l'elemento audio.
     </audio>
@@ -132,7 +122,6 @@
         let freeSessionAwarded = 0;
         let userData = {};
 
-        // Funzione countdown
         function updateCountdown() {
             const now = new Date();
             const timeLeft = endDate - now;
@@ -151,15 +140,6 @@
             document.getElementById('countdown').innerHTML = 
                 `Tempo rimanente: ${days}g ${hours}h ${minutes}m ${seconds}s`;
         }
-
-        // Gestione musica
-        const music = document.getElementById('christmasMusic');
-        const playMusicBtn = document.getElementById('playMusicBtn');
-
-        playMusicBtn.addEventListener('click', () => {
-            music.play();
-            playMusicBtn.style.display = 'none';
-        });
 
         function submitUserData() {
             userData.name = document.getElementById('name').value;
@@ -206,7 +186,7 @@
             document.getElementById('result').innerHTML = `
                 <h2>Congratulazioni, ${userData.name} ${userData.surname}!</h2>
                 <p>Hai vinto: ${prize}</p>
-                <form action="https://formspree.io/f/xyzygrwg" method="POST">
+                <form action="https://formspree.io/f/xyzygrwg" method="POST" onsubmit="return handleSubmit(event)">
                     <input type="hidden" name="nome" value="${userData.name}">
                     <input type="hidden" name="cognome" value="${userData.surname}">
                     <input type="hidden" name="email" value="${userData.email}">
@@ -216,6 +196,56 @@
                 </form>
             `;
         }
+
+        function handleSubmit(event) {
+            event.preventDefault();
+            const form = event.target;
+            const data = new FormData(form);
+
+            fetch(form.action, {
+                method: 'POST',
+                body: data,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    document.getElementById('result').innerHTML = `
+                        <h2>Grazie!</h2>
+                        <p>La tua prenotazione è stata registrata con successo.</p>
+                    `;
+                } else {
+                    throw new Error('Errore nell\'invio del form');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+
+            return false;
+        }
+
+        // Gestione automatica della musica
+        window.addEventListener('DOMContentLoaded', (event) => {
+            const music = document.getElementById('christmasMusic');
+            music.volume = 0.3;
+            
+            const playAttempt = setInterval(() => {
+                music.play()
+                    .then(() => {
+                        clearInterval(playAttempt);
+                    })
+                    .catch(() => {
+                        // Continua a tentare
+                    });
+            }, 1000);
+        });
+
+        // Inizializzazione
+        setInterval(createSnowflake, 50);
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
 
         // Effetto neve
         function createSnowflake() {
@@ -232,12 +262,6 @@
                 snowflake.remove();
             }, 5000);
         }
-
-        // Inizializzazione
-        setInterval(createSnowflake, 50);
-        updateCountdown();
-        setInterval(updateCountdown, 1000);
-        document.getElementById('userForm').style.display = 'block';
     </script>
 </body>
 </html>
