@@ -14,7 +14,6 @@
             align-items: center;
             height: 100vh;
             margin: 0;
-            overflow: hidden;
         }
         .container {
             background-color: rgba(255, 255, 255, 0.1);
@@ -23,59 +22,36 @@
             box-shadow: 0 0 20px rgba(0,0,0,0.2);
             text-align: center;
             max-width: 400px;
-            position: relative;
-            z-index: 1;
         }
         h1 {
             color: #c41e3a;
             font-size: 2rem;
             margin-bottom: 1rem;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
         }
         input, button {
             display: block;
-            width: calc(100% - 20px); /* Sottraiamo il padding per mantenere l'allineamento */
+            width: 100%;
             padding: 10px;
             margin: 10px 0;
             border: none;
             border-radius: 5px;
-            box-sizing: border-box; /* Aggiunto per garantire la larghezza corretta */
+            box-sizing: border-box;
         }
         button {
             background-color: #c41e3a;
             color: white;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: background-color 0.3s;
             font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
         button:hover {
             background-color: #9a1629;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 8px rgba(0,0,0,0.15);
         }
         #countdown, #result {
             margin-top: 1rem;
         }
         #userForm, #gameSection, #result {
             display: none;
-        }
-        .snowflake {
-            color: #fff;
-            font-size: 1em;
-            font-family: Arial;
-            text-shadow: 0 0 1px #000;
-            position: fixed;
-            top: -10%;
-            z-index: 0;
-            animation: fall linear infinite;
-        }
-        @keyframes fall {
-            to {
-                transform: translateY(100vh);
-            }
         }
     </style>
 </head>
@@ -84,13 +60,14 @@
         <h1>Promozione Natalizia</h1>
         <div id="countdown"></div>
         
-        <div id="userForm">
-            <input type="text" id="name" placeholder="Nome" required>
-            <input type="text" id="surname" placeholder="Cognome" required>
-            <input type="email" id="email" placeholder="Email" required>
-            <input type="tel" id="phone" placeholder="Telefono" required>
-            <button onclick="submitUserData()">Partecipa</button>
-        </div>
+        <form id="userForm" action="https://formspree.io/f/xyzygrwg" method="POST">
+            <input type="text" name="nome" id="name" placeholder="Nome" required>
+            <input type="text" name="cognome" id="surname" placeholder="Cognome" required>
+            <input type="email" name="email" id="email" placeholder="Email" required>
+            <input type="tel" name="telefono" id="phone" placeholder="Telefono" required>
+            <input type="hidden" name="premio" id="prize">
+            <button type="button" onclick="submitUserData()">Partecipa</button>
+        </form>
 
         <div id="gameSection">
             <button onclick="play()">Gioca Ora</button>
@@ -99,13 +76,7 @@
         <div id="result"></div>
     </div>
 
-    <audio id="christmasMusic" loop preload="auto">
-        <source src="https://raw.githubusercontent.com/ziodada/ziodada.github.io/main/Sottofondo%20natale.mp3" type="audio/mpeg">
-        Il tuo browser non supporta l'elemento audio.
-    </audio>
-
     <script>
-        // Codice JavaScript esistente...
         const endDate = new Date();
         endDate.setDate(endDate.getDate() + 7);
 
@@ -159,10 +130,8 @@
             document.getElementById('result').innerHTML = `
                 <h2>Congratulazioni, ${userData.name} ${userData.surname}!</h2>
                 <p>Hai vinto: ${prize}</p>
-                <button onclick="claim('${prize}')">Prenota Ora</button>
+                <button onclick="submitToFormspree('${prize}')">Riscatta Premio</button>
             `;
-
-            sendToFormspree(prize);
         }
 
         function selectPrize() {
@@ -185,92 +154,14 @@
             return "Sconto del 10%";
         }
 
-        function sendToFormspree(prize) {
-            const formData = {
-                nome: userData.name,
-                cognome: userData.surname,
-                email: userData.email,
-                telefono: userData.phone,
-                premio: prize
-            };
-
-            fetch('https://formspree.io/f/xyzygrwg', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify(formData)
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Errore nell\'invio dei dati');
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log('Dati inviati con successo:', data);
-            })
-            .catch(error => {
-                console.error('Errore:', error);
-            });
-        }
-
-        function claim(prize) {
-            const bookingUrl = `https://antonellamafucci.com/prenota?` +
-                               `nome=${encodeURIComponent(userData.name)}` +
-                               `&cognome=${encodeURIComponent(userData.surname)}` +
-                               `&email=${encodeURIComponent(userData.email)}` +
-                               `&telefono=${encodeURIComponent(userData.phone)}` +
-                               `&premio=${encodeURIComponent(prize)}`;
-            window.location.href = bookingUrl;
-        }
-
-        // Gestione musica
-        window.addEventListener('load', function() {
-            const music = document.getElementById('christmasMusic');
-            music.volume = 0.5; // Volume al 50%
-            
-            // Tentativo di riproduzione automatica
-            const playPromise = music.play();
-            
-            if (playPromise !== undefined) {
-                playPromise.catch(error => {
-                    console.log("Autoplay prevented");
-                    // Creiamo un pulsante per l'interazione utente se necessario
-                    if (!document.getElementById('playButton')) {
-                        const playButton = document.createElement('button');
-                        playButton.innerHTML = "▶ Avvia Musica";
-                        playButton.style.position = "fixed";
-                        playButton.style.bottom = "20px";
-                        playButton.style.right = "20px";
-                        playButton.style.zIndex = "1000";
-                        playButton.onclick = () => music.play();
-                        document.body.appendChild(playButton);
-                    }
-                });
-            }
-        });
-
-        // Effetto neve
-        function createSnowflake() {
-            const snowflake = document.createElement('div');
-            snowflake.classList.add('snowflake');
-            snowflake.innerHTML = '❄';
-            snowflake.style.left = Math.random() * 100 + '%';
-            snowflake.style.animationDuration = Math.random() * 3 + 2 + 's';
-            snowflake.style.opacity = Math.random();
-            snowflake.style.fontSize = Math.random() * 10 + 10 + 'px';
-            document.body.appendChild(snowflake);
-
-            setTimeout(() => {
-                snowflake.remove();
-            }, 5000);
+        function submitToFormspree(prize) {
+            document.getElementById('prize').value = prize;
+            const form = document.getElementById('userForm');
+            form.submit();
         }
 
         updateCountdown();
         setInterval(updateCountdown, 1000);
-        setInterval(createSnowflake, 100);
         document.getElementById('userForm').style.display = 'block';
     </script>
 </body>
